@@ -100,7 +100,7 @@
         const data = await response.json();
         addMessage(data.reply || '[No response]', 'bot');
       } catch (err) {
-        addMessage('⚠️ Error reaching server.', 'bot');
+        addMessage('⚠️ Error reaching the server.', 'bot');
         console.error(err);
       }
     }
