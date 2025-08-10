@@ -28,8 +28,8 @@
 
     #chatbox {
       width: 100%;
-      max-width: 420px;
-      height: 90vh;
+      max-width: 90%;
+      height: 70vh;
       background: var(--card);
       border-radius: var(--radius);
       box-shadow: 0 8px 28px rgba(0,0,0,.08);
@@ -37,6 +37,12 @@
       flex-direction: column;
       overflow: hidden;
     }
+    @media (max-width: 768px) {
+  #chatbox {
+    max-width: 420px;
+    height: 90vh;
+  }
+}
 
     /* Header */
     #header {
