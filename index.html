@@ -2,203 +2,174 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mobile Detailing SD — Chat</title>
   <style>
-    :root{
-      /* easy-to-tweak theme tokens */
-      --brand: #007bff;            /* your site blue */
-      --text: #0f172a;             /* slate-900-ish */
-      --muted: #667085;            /* slate-500-ish */
-      --bg: #f4f4f4;               /* page bg (non-embed) */
-      --card: #ffffff;             /* chat card bg */
-      --bot-bubble: #f2f4f7;       /* light gray bubble */
-      --user-bubble: var(--brand); /* user bubble color */
+    :root {
+      --brand: #1253A3;
+      --text: #0f172a;
+      --muted: #667085;
+      --bg: #f4f4f4;
+      --card: #ffffff;
+      --bot-bubble: #f2f4f7;
+      --user-bubble: var(--brand);
       --radius: 14px;
     }
 
-    /* base layout */
-    html, body {
-      height: 100%;
-      margin: 0;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--text);
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
-    }
-    /* embed mode removes page chrome */
-    body.embed {
-      background: transparent;
-      display: block;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
-    .shell {
-      display: flex; align-items: center; justify-content: center;
-      min-height: 100vh; padding: 16px;
-    }
-    body.embed .shell { min-height: 100%; padding: 0; }
-
-    /* chat card */
-    .card {
-      width: min(400px, 100%);
-      height: min(600px, 100vh);
+    #chatbox {
+      width: 100%;
+      max-width: 420px;
+      height: 90vh;
       background: var(--card);
-      border: 1px solid #e5e7eb;
       border-radius: var(--radius);
       box-shadow: 0 8px 28px rgba(0,0,0,.08);
-      display: flex; flex-direction: column; overflow: hidden;
-    }
-    body.embed .card {
-      border-radius: 0; border: 0; box-shadow: none; height: 100vh;
-    }
-
-    .header {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 12px;
-      border-bottom: 1px solid #eef0f2;
-      background: #ffffff;
-    }
-    .badge {
-      width: 10px; height: 10px; border-radius: 999px; background: var(--brand); opacity: .9;
-      box-shadow: 0 0 0 3px rgba(0,123,255,.15);
-    }
-    .title {
-      margin: 0; font-weight: 700; line-height: 1.2;
-      font-size: 15px;
-    }
-    .sub {
-      margin-left: auto; font-size: 12px; color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
-    /* messages area */
-    .messages {
-      flex: 1; overflow: auto; padding: 12px; background: #fafafb;
-      scroll-behavior: smooth;
+    /* Header */
+    #header {
+      background: var(--card);
+      border-bottom: 1px solid #e5e7eb;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+    }
+    #status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    #status-dot {
+      width: 10px;
+      height: 10px;
+      background: var(--brand);
+      border-radius: 50%;
+    }
+
+    /* Messages area */
+    #messages {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
     .row {
-      display: flex; margin: 6px 0;
+      display: flex;
     }
-    .row.bot   { justify-content: flex-start; }
-    .row.user  { justify-content: flex-end;  }
+    .row.bot { justify-content: flex-start; }
+    .row.user { justify-content: flex-end; }
 
     .bubble {
       max-width: 78%;
-      padding: 10px 12px;
-      border-radius: 16px;
+      padding: 10px 12px 6px;
+      border-radius: var(--radius);
       line-height: 1.35;
       font-size: 14px;
       box-shadow: 0 1px 1px rgba(0,0,0,.04);
-      white-space: pre-wrap; word-wrap: break-word;
+      white-space: pre-wrap;
+      word-wrap: break-word;
     }
     .bot .bubble {
       background: var(--bot-bubble);
-      color: #1f2937;
-      border-bottom-left-radius: 6px; /* subtle “tail” */
+      color: var(--text);
     }
     .user .bubble {
       background: var(--user-bubble);
-      color: #ffffff;
-      border-bottom-right-radius: 6px; /* subtle “tail” */
+      color: white;
     }
 
+    /* timestamp */
     .time {
-      display: block; font-size: 11px; opacity: .55; margin-top: 4px;
+      display: block;
+      font-size: 11px;
+      opacity: .55;
+      margin-top: 2px;
     }
 
-    /* input row */
-    .composer {
-      display: flex; gap: 8px; align-items: center;
-      padding: 10px; border-top: 1px solid #eef0f2; background: #fff;
+    /* Input area */
+    #inputArea {
+      display: flex;
+      border-top: 1px solid #e5e7eb;
+      padding: 8px;
+      background: var(--card);
     }
-    .input {
-      flex: 1; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px;
-      font: inherit; outline: none; min-height: 18px;
+    #userInput {
+      flex: 1;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: var(--radius);
+      font-size: 14px;
     }
-    .input:focus { border-color: #cbd5e1; box-shadow: inset 0 0 0 1px #cbd5e1; }
-    .send {
-      border: 0; border-radius: 10px; padding: 10px 14px;
-      background: var(--brand); color: #fff; font: inherit; cursor: pointer;
-      transition: transform .02s ease-in-out, opacity .2s;
+    #sendBtn {
+      margin-left: 6px;
+      padding: 0 16px;
+      background: var(--brand);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      cursor: pointer;
     }
-    .send:disabled { opacity: .5; cursor: not-allowed; }
-    .send:active { transform: translateY(1px); }
-
-    /* typing dots */
-    .typing {
-      display: inline-flex; gap: 4px; align-items: center; height: 14px;
-    }
-    .typing i {
-      width: 6px; height: 6px; border-radius: 999px; background: #9aa4b2; opacity: .9;
-      animation: blink 1.2s infinite ease-in-out;
-    }
-    .typing i:nth-child(2){ animation-delay: .15s; }
-    .typing i:nth-child(3){ animation-delay: .3s; }
-    @keyframes blink {
-      0%, 80%, 100% { opacity: .25; transform: translateY(0); }
-      40% { opacity: 1; transform: translateY(-2px); }
-    }
-
-    /* mobile */
-    @media (max-width: 480px){
-      .card { height: 70vh; }
-      .bubble { max-width: 86%; }
+    #sendBtn:hover {
+      opacity: 0.9;
     }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <div class="card" role="dialog" aria-label="Mobile Detailing SD Chat">
-      <div class="header">
-        <span class="badge" aria-hidden="true"></span>
-        <h1 class="title">Mobile Detailing SD</h1>
-        <span class="sub">Online</span>
+  <div id="chatbox">
+    <div id="header">
+      <span>Mobile Detailing SD</span>
+      <div id="status">
+        <div id="status-dot"></div> Online
       </div>
-
-      <div id="messages" class="messages" aria-live="polite">
-        <div class="row bot">
-          <div class="bubble">
-            Hi there! Would you like to book a detailing appointment or ask a question?
-            <span class="time" aria-hidden="true">now</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="composer">
-        <input id="input" class="input" type="text" placeholder="Type your message…" autocomplete="off" />
-        <button id="send" class="send">Send</button>
-      </div>
+    </div>
+    <div id="messages"></div>
+    <div id="inputArea">
+      <input type="text" id="userInput" placeholder="Type your message..." />
+      <button id="sendBtn">Send</button>
     </div>
   </div>
 
   <script>
-    // Enable compact "embed mode" when ?embed=1
-    (function(){
-      const params = new URLSearchParams(location.search);
-      if (params.get('embed') === '1') document.body.classList.add('embed');
-    })();
-
     const webhookUrl = 'https://gavinrharris.app.n8n.cloud/webhook/f343646f-0d88-4128-8667-5520a1385980';
     const $messages = document.getElementById('messages');
-    const $input    = document.getElementById('input');
-    const $send     = document.getElementById('send');
+    const $input = document.getElementById('userInput');
+    const $send = document.getElementById('sendBtn');
+    const sessionId = 'session_' + Date.now() + '_' + Math.floor(Math.random() * 1000000);
 
-    function nowTime(){
+    function nowTime() {
       const d = new Date();
-      const h = d.getHours();
-      const m = String(d.getMinutes()).padStart(2,'0');
-      const ampm = h >= 12 ? 'PM' : 'AM';
-      const hh = ((h + 11) % 12 + 1);
-      return `${hh}:${m} ${ampm}`;
+      return d.toLocaleTimeString([], {hour: 'numeric', minute: '2-digit'});
     }
 
-    function addBubble(text, who='bot'){
+    function addBubble(text, who='bot') {
       const row = document.createElement('div');
       row.className = 'row ' + who;
 
       const bubble = document.createElement('div');
       bubble.className = 'bubble';
-      bubble.textContent = text;
+
+      const messageText = document.createElement('div');
+      messageText.textContent = text;
+      bubble.appendChild(messageText);
 
       const ts = document.createElement('span');
       ts.className = 'time';
@@ -210,66 +181,31 @@
       $messages.scrollTop = $messages.scrollHeight;
     }
 
-    function addTyping(){
-      const row = document.createElement('div');
-      row.className = 'row bot';
-      row.id = 'typing-row';
-
-      const bubble = document.createElement('div');
-      bubble.className = 'bubble';
-
-      const dots = document.createElement('span');
-      dots.className = 'typing';
-      dots.innerHTML = '<i></i><i></i><i></i>';
-      bubble.appendChild(dots);
-
-      row.appendChild(bubble);
-      $messages.appendChild(row);
-      $messages.scrollTop = $messages.scrollHeight;
-    }
-
-    function removeTyping(){
-      const t = document.getElementById('typing-row');
-      if (t) t.remove();
-    }
-
-    // stable-ish session id
-    const sessionId = (() => {
-      const k = 'cb_session_id';
-      let v = localStorage.getItem(k);
-      if (!v){ v = 'session_' + Date.now() + '_' + Math.floor(Math.random()*1e6); localStorage.setItem(k, v); }
-      return v;
-    })();
-
-    async function sendMessage(){
+    async function sendMessage() {
       const text = $input.value.trim();
       if (!text) return;
       addBubble(text, 'user');
       $input.value = '';
-      $input.focus();
-      $send.disabled = true;
 
-      addTyping();
-      try{
-        const res = await fetch(webhookUrl, {
+      try {
+        const response = await fetch(webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: text, sessionId })
         });
-        const data = await res.json().catch(()=>({ reply: '[No response]' }));
-        removeTyping();
+        const data = await response.json();
         addBubble(data.reply || '[No response]', 'bot');
-      } catch(err){
-        removeTyping();
+      } catch (err) {
         addBubble('⚠️ There was an error reaching the server.', 'bot');
         console.error(err);
-      } finally {
-        $send.disabled = false;
       }
     }
 
     $send.addEventListener('click', sendMessage);
-    $input.addEventListener('keydown', (e)=>{ if (e.key === 'Enter') sendMessage(); });
+    $input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+
+    // Initial welcome message
+    addBubble("Hi there! Would you like to book a detailing appointment or ask a question?", 'bot');
   </script>
 </body>
 </html>
