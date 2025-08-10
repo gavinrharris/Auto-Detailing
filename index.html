@@ -5,149 +5,89 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mobile Detailing SD — Chat</title>
   <style>
-    :root {
-      --brand: #1253A3;
-      --text: #0f172a;
-      --muted: #667085;
-      --bg: #f4f4f4;
-      --card: #ffffff;
-      --bot-bubble: #f2f4f7;
-      --user-bubble: var(--brand);
-      --radius: 14px;
+    :root{
+      --brand:#1253A3;
+      --text:#0f172a;
+      --muted:#667085;
+      --bg:#f4f4f4;
+      --card:#ffffff;
+      --bot-bubble:#f2f4f7;
+      --user-bubble:var(--brand);
+      --radius:14px;
     }
 
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    /* base */
+    html,body{height:100%;margin:0}
+    body{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      background:var(--bg);
+      display:flex;align-items:center;justify-content:center;
     }
 
-    #chatbox {
-      width: 100%;
-      max-width: 90%;
-      height: 70vh;
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: 0 8px 28px rgba(0,0,0,.08);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    @media (max-width: 768px) {
-  #chatbox {
-    max-width: 420px;
-    height: 90vh;
-  }
-}
-
-    /* Header */
-    #header {
-      background: var(--card);
-      border-bottom: 1px solid #e5e7eb;
-      padding: 12px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-    }
-    #status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 14px;
-      color: var(--muted);
-    }
-    #status-dot {
-      width: 10px;
-      height: 10px;
-      background: var(--brand);
-      border-radius: 50%;
+    /* EMBED MODE — when ?embed=1 */
+    body.embed{background:transparent;display:block}
+    body.embed #chatbox{
+      max-width:100%; width:100%; height:100vh;   /* fill iframe */
+      margin:0;
     }
 
-    /* Messages area */
-    #messages {
-      flex: 1;
-      padding: 12px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .row {
-      display: flex;
-    }
-    .row.bot { justify-content: flex-start; }
-    .row.user { justify-content: flex-end; }
-
-    .bubble {
-      max-width: 78%;
-      padding: 10px 12px 6px;
-      border-radius: var(--radius);
-      line-height: 1.35;
-      font-size: 14px;
-      box-shadow: 0 1px 1px rgba(0,0,0,.04);
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-    .bot .bubble {
-      background: var(--bot-bubble);
-      color: var(--text);
-    }
-    .user .bubble {
-      background: var(--user-bubble);
-      color: white;
+    /* chat card */
+    #chatbox{
+      width:100%;
+      max-width:420px;            /* normal page view */
+      height:90vh;
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:0 8px 28px rgba(0,0,0,.08);
+      display:flex;flex-direction:column;overflow:hidden;
     }
 
-    /* timestamp */
-    .time {
-      display: block;
-      font-size: 11px;
-      opacity: .55;
-      margin-top: 2px;
+    /* header */
+    #header{
+      background:var(--card);
+      border-bottom:1px solid #e5e7eb;
+      padding:12px 16px;
+      display:flex;align-items:center;justify-content:space-between;
+      font-weight:700;
     }
+    #status{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--muted);font-size:14px}
+    #status-dot{width:10px;height:10px;background:var(--brand);border-radius:50%}
 
-    /* Input area */
-    #inputArea {
-      display: flex;
-      border-top: 1px solid #e5e7eb;
-      padding: 8px;
-      background: var(--card);
+    /* messages */
+    #messages{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#fafafb}
+    .row{display:flex}
+    .row.bot{justify-content:flex-start}
+    .row.user{justify-content:flex-end}
+    .bubble{
+      max-width:78%;padding:10px 12px 6px;border-radius:16px;line-height:1.35;font-size:14px;
+      box-shadow:0 1px 1px rgba(0,0,0,.04);white-space:pre-wrap;word-wrap:break-word
     }
-    #userInput {
-      flex: 1;
-      padding: 8px 10px;
-      border: 1px solid #ccc;
-      border-radius: var(--radius);
-      font-size: 14px;
-    }
-    #sendBtn {
-      margin-left: 6px;
-      padding: 0 16px;
-      background: var(--brand);
-      color: white;
-      border: none;
-      border-radius: var(--radius);
-      font-size: 14px;
-      cursor: pointer;
-    }
-    #sendBtn:hover {
-      opacity: 0.9;
+    .bot .bubble{background:var(--bot-bubble);color:var(--text)}
+    .user .bubble{background:var(--user-bubble);color:#fff}
+    .time{display:block;font-size:11px;opacity:.55;margin-top:2px}
+
+    /* input */
+    #inputArea{display:flex;gap:8px;align-items:center;border-top:1px solid #e5e7eb;padding:10px;background:#fff}
+    #userInput{flex:1;padding:10px 12px;border:1px solid #ccc;border-radius:12px;font-size:14px}
+    #sendBtn{padding:10px 16px;background:var(--brand);color:#fff;border:0;border-radius:12px;font-size:14px;cursor:pointer}
+    #sendBtn:hover{opacity:.9}
+
+    /* tidy */
+    *{box-sizing:border-box}
+    @media (max-width:768px){
+      #chatbox{max-width:420px;height:90vh}
     }
   </style>
 </head>
 <body>
-  <div id="chatbox">
+  <div id="chatbox" role="dialog" aria-label="Mobile Detailing SD Chat">
     <div id="header">
       <span>Mobile Detailing SD</span>
-      <div id="status">
-        <div id="status-dot"></div> Online
-      </div>
+      <div id="status"><span id="status-dot"></span>Online</div>
     </div>
+
     <div id="messages"></div>
+
     <div id="inputArea">
       <input type="text" id="userInput" placeholder="Type your message..." />
       <button id="sendBtn">Send</button>
@@ -155,63 +95,48 @@
   </div>
 
   <script>
-    const webhookUrl = 'https://gavinrharris.app.n8n.cloud/webhook/f343646f-0d88-4128-8667-5520a1385980';
-    const $messages = document.getElementById('messages');
-    const $input = document.getElementById('userInput');
-    const $send = document.getElementById('sendBtn');
-    const sessionId = 'session_' + Date.now() + '_' + Math.floor(Math.random() * 1000000);
+    // Enable embed mode for ?embed=1
+    (function(){
+      const p=new URLSearchParams(location.search);
+      if(p.get('embed')==='1') document.body.classList.add('embed');
+    })();
 
-    function nowTime() {
-      const d = new Date();
-      return d.toLocaleTimeString([], {hour: 'numeric', minute: '2-digit'});
+    const webhookUrl='https://gavinrharris.app.n8n.cloud/webhook/f343646f-0d88-4128-8667-5520a1385980';
+    const $messages=document.getElementById('messages');
+    const $input=document.getElementById('userInput');
+    const $send=document.getElementById('sendBtn');
+    const sessionId='session_'+Date.now()+'_'+Math.floor(Math.random()*1e6);
+
+    function nowTime(){
+      const d=new Date();
+      return d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
     }
 
-    function addBubble(text, who='bot') {
-      const row = document.createElement('div');
-      row.className = 'row ' + who;
-
-      const bubble = document.createElement('div');
-      bubble.className = 'bubble';
-
-      const messageText = document.createElement('div');
-      messageText.textContent = text;
-      bubble.appendChild(messageText);
-
-      const ts = document.createElement('span');
-      ts.className = 'time';
-      ts.textContent = nowTime();
-      bubble.appendChild(ts);
-
-      row.appendChild(bubble);
-      $messages.appendChild(row);
-      $messages.scrollTop = $messages.scrollHeight;
+    function addBubble(text,who='bot'){
+      const row=document.createElement('div'); row.className='row '+who;
+      const bubble=document.createElement('div'); bubble.className='bubble';
+      const msg=document.createElement('div'); msg.textContent=text; bubble.appendChild(msg);
+      const ts=document.createElement('span'); ts.className='time'; ts.textContent=nowTime(); bubble.appendChild(ts);
+      row.appendChild(bubble); $messages.appendChild(row);
+      $messages.scrollTop=$messages.scrollHeight;
     }
 
-    async function sendMessage() {
-      const text = $input.value.trim();
-      if (!text) return;
-      addBubble(text, 'user');
-      $input.value = '';
-
-      try {
-        const response = await fetch(webhookUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: text, sessionId })
-        });
-        const data = await response.json();
-        addBubble(data.reply || '[No response]', 'bot');
-      } catch (err) {
-        addBubble('⚠️ There was an error reaching the server.', 'bot');
-        console.error(err);
-      }
+    async function sendMessage(){
+      const text=$input.value.trim(); if(!text) return;
+      addBubble(text,'user'); $input.value=''; $input.focus(); $send.disabled=true;
+      try{
+        const res=await fetch(webhookUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,sessionId})});
+        const data=await res.json().catch(()=>({reply:'[No response]'}));
+        addBubble(data.reply || '[No response]','bot');
+      }catch(e){ addBubble('⚠️ There was an error reaching the server.','bot'); console.error(e); }
+      finally{ $send.disabled=false; }
     }
 
-    $send.addEventListener('click', sendMessage);
-    $input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+    $send.addEventListener('click',sendMessage);
+    $input.addEventListener('keydown',e=>{ if(e.key==='Enter') sendMessage(); });
 
-    // Initial welcome message
-    addBubble("Hi there! Would you like to book a detailing appointment or ask a question?", 'bot');
+    // Initial welcome
+    addBubble('Hi there! Would you like to book a detailing appointment or ask a question?','bot');
   </script>
 </body>
 </html>
