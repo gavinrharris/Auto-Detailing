@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chatbot</title>
   <style>
+    :root { color-scheme: light; }
     body {
       font-family: Arial, sans-serif;
       display: flex;
@@ -13,6 +14,13 @@
       height: 100vh;
       margin: 0;
       background: #f4f4f4;
+    }
+    /* embed mode overrides (applies when body.embed is present) */
+    body.embed {
+      display: block;          /* let the box fill the iframe, not center the page */
+      height: auto;
+      background: transparent; /* no grey */
+      padding: 0; margin: 0;
     }
     #chatbox {
       width: 400px;
@@ -24,25 +32,27 @@
       flex-direction: column;
       overflow: hidden;
     }
+    body.embed #chatbox {
+      width: 100%;             /* fill the iframe container */
+      height: 100vh;           /* let parent iframe control the visual height */
+      max-height: 100vh;
+      border: 0;               /* no double border inside a rounded iframe */
+      border-radius: 0;        /* outer iframe already has rounded corners */
+    }
     #messages {
       flex: 1;
       padding: 10px;
       overflow-y: auto;
+      background: #fff;
     }
-    .msg {
-      margin: 5px 0;
-    }
-    .bot {
-      color: #555;
-    }
-    .user {
-      text-align: right;
-      color: #007bff;
-    }
+    .msg { margin: 5px 0; }
+    .bot { color: #555; }
+    .user { text-align: right; color: #007bff; }
     #inputArea {
       display: flex;
       padding: 10px;
       border-top: 1px solid #ccc;
+      background: #fff;
     }
     #inputArea input {
       flex: 1;
@@ -59,29 +69,44 @@
       border-radius: 4px;
       cursor: pointer;
     }
+
+    /* mobile sizing when embedded */
+    @media (max-width: 480px){
+      body.embed #chatbox { height: 70vh; }
+    }
   </style>
 </head>
 <body>
   <div id="chatbox">
     <div id="messages">
-      <div class="msg bot"> Hi there! Would you like to book a detailing appointment or ask a question?</div>
+      <div class="msg bot">Hi there! Would you like to book a detailing appointment or ask a question?</div>
     </div>
     <div id="inputArea">
       <input type="text" id="userInput" placeholder="Type your message..." />
-      <button onclick="sendMessage()">Send</button>
+      <button id="sendBtn" onclick="sendMessage()">Send</button>
     </div>
   </div>
 
   <script>
+    // Enable "embed" mode if ?embed=1 is present
+    (function(){
+      const params = new URLSearchParams(location.search);
+      if (params.get('embed') === '1') {
+        document.body.classList.add('embed');
+      }
+    })();
+
     const webhookUrl = 'https://gavinrharris.app.n8n.cloud/webhook/f343646f-0d88-4128-8667-5520a1385980';
 
     function addMessage(content, sender) {
       const msgDiv = document.createElement('div');
       msgDiv.classList.add('msg', sender);
       msgDiv.textContent = content;
-      document.getElementById('messages').appendChild(msgDiv);
-      document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+      const messages = document.getElementById('messages');
+      messages.appendChild(msgDiv);
+      messages.scrollTop = messages.scrollHeight;
     }
+
     const sessionId = 'session_' + Date.now() + '_' + Math.floor(Math.random() * 1000000);
 
     async function sendMessage() {
@@ -95,7 +120,7 @@
         const response = await fetch(webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: text, sessionId: sessionId })
+          body: JSON.stringify({ message: text, sessionId })
         });
         const data = await response.json();
         addMessage(data.reply || '[No response]', 'bot');
@@ -104,6 +129,13 @@
         console.error(err);
       }
     }
+
+    // also send on Enter
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && document.activeElement === document.getElementById('userInput')) {
+        sendMessage();
+      }
+    });
   </script>
 </body>
 </html>
