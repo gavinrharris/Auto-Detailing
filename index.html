@@ -67,10 +67,35 @@
     .time{display:block;font-size:11px;opacity:.55;margin-top:2px}
 
     /* input */
-    #inputArea{display:flex;gap:8px;align-items:center;border-top:1px solid #e5e7eb;padding:10px;background:#fff}
-    #userInput{flex:1;padding:10px 12px;border:1px solid #ccc;border-radius:12px;font-size:14px}
-    #sendBtn{padding:10px 16px;background:var(--brand);color:#fff;border:0;border-radius:12px;font-size:14px;cursor:pointer}
-    #sendBtn:hover{opacity:.9}
+    /* input */
+    #inputArea {
+      display:flex;
+      gap:8px;
+      align-items:center;
+      border-top:1px solid #e5e7eb;
+      padding:10px;
+      background:#fff;
+    }
+    #userInput {
+      flex:1 1 auto;   /* allow it to grow and shrink */
+      min-width:0;     /* <-- critical: lets it shrink on small screens */
+      padding:10px 12px;
+      border:1px solid #ccc;
+      border-radius:12px;
+      font-size:14px;
+    }
+    #sendBtn {
+      flex:0 0 auto;   /* <-- don’t let button shrink */
+      padding:10px 16px;
+      background:var(--brand);
+      color:#fff;
+      border:0;
+      border-radius:12px;
+      font-size:14px;
+      cursor:pointer;
+    }
+    #sendBtn:hover { opacity:.9 }
+
 
     /* tidy */
     *{box-sizing:border-box}
